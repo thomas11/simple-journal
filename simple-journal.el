@@ -1,8 +1,8 @@
-;;; simple-journal.el --- Keep a brief daily journal from Emacs.
+;;; simple-journal.el --- Keep a brief daily journal.
 
 ;; Author: Thomas Kappler <tkappler@gmail.com>
 ;; Created: 2009 November 07
-;; Keywords: journal, diary
+;; Keywords: journal, diary, calendar
 ;; URL: <http://github.com/thomas11/simple-journal/tree/master>
 
 ;; Copyright (C) 2009 Thomas Kappler
@@ -29,11 +29,11 @@
 ;; journals with many short entries than with fewer long entries. Here
 ;; is an excerpt of a journal produced with simple-journal:
 
-;; 2009/Oct/07
-;; 10:42 - About to read "In pursuit of desktop evolution" by Ravasio et al - ~/Downloads/10.1.1.96.398.pdf 
-;; 12:56 - Finished reading and taking notes in ~/Documents/Gnome/design/articles.txt
-;; + check why my subscription to opensuse-wiki didn't work
-;; + Add autotools to gnome-activity-journal
+;;     2009/Oct/07
+;;     10:42 - About to read "In pursuit of desktop evolution" by Ravasio et al - ~/Downloads/10.1.1.96.398.pdf 
+;;     12:56 - Finished reading and taking notes in ~/Documents/Gnome/design/articles.txt
+;;     + check why my subscription to opensuse-wiki didn't work
+;;     + Add autotools to gnome-activity-journal
 
 ;; This excerpt is originally from a blog post by Federico Mena
 ;; Quintero:
@@ -55,38 +55,124 @@
 
 ;;; TODO
 
-;; - new-item (the + thingies)
 
 ;;; Code:
-(defun sj-new-log (right-here-p)
-  (interactive "P")
+(defvar sj-journal-file "~/Writing/journal.txt"
+  "Your journal file.")
+
+(defun sj-new-item (right-here-p &rest items)
+  (sj-visit-journal)
   (unless right-here-p
     (sj-move-to-new-entry-position))
-  (insert (format-time-string "%H:%M") " - "))
+  (apply 'insert items))
+
+(defun sj-new-entry (right-here-p)
+  (interactive "P")
+  (sj-new-item right-here-p (format-time-string "%H:%M") " - "))
+
+(defun sj-new-todo (right-here-p)
+  (interactive "P")
+  (sj-new-item right-here-p "+ "))
 
 (defun sj-move-to-new-entry-position ()
-  "If we can find a previous entry, start a new line after it and go there.
-If we cannot, start the new entry at point if we're on an empty
-line, on a new line after point otherwise."
-  (let ((last (sj-find-last-entry)))
-    (if last (goto-char last))
-    (when (or last (sj-cur-line-not-empty-p))
-      (end-of-line)
-      (newline))))
+  "Move point to a suitable position for starting a new entry.
+If we can find a previous entry, start a new line after it and go
+there.  Otherwise, start the new entry on a new line after point.
+In addition, start a new day if the last day stamp is not today."
+  (let* ((last     (sj-find-last-entry))
+         (last-day (sj-last-date last))
+         (today    (sj-today-str)))
+    (when last (goto-char last))
+    (sj-move-past-current-entry)
+    (when (not (string= today last-day))
+      (insert "\n" today "\n"))))
 
-(defun sj-cur-line-not-empty-p ()
-  (beginning-of-line)
-  (looking-at-p ".*[:word:]"))
+(defun sj-today-str ()
+  (format-time-string "%Y-%m-%d"))
+
+(defun sj-move-past-current-entry ()
+  "Does one (forward-line 1), followed by more as long as we're
+looking at indented lines (in case the current entry is on
+multiple lines)."
+  (interactive)
+  (while (progn
+           (forward-line 1)
+           (looking-at "  ")))
+  ; If we're on an empty line, we're good now; if not, create one.
+  (unless (looking-at "^$")
+    (open-line 1)))
 
 (defun sj-find-last-entry ()
   (save-excursion
     (goto-char (point-max))
     (re-search-backward "^[0-9][0-9]:[0-9][0-9] - .*" nil t)))
 
-(defun sj-new-log-here ()
-  (interactive)
-  (insert (format-time-string "%H:%M") " - "))
+(defun sj-last-date (&optional start-here-backwards)
+  (save-excursion
+    (goto-char (if start-here-backwards
+                   start-here-backwards
+                 (point-max)))
+    (if (re-search-backward "^[0-9]\\{4\\}-[0-9][0-9]-[0-9][0-9]" nil t)
+        (match-string-no-properties 0)
+      nil)))
 
+(defun sj-visit-journal ()
+  (find-file sj-journal-file))
+
+
+;; Unit tests, using el-expectations by rubikitch,
+;; <http://www.emacswiki.org/emacs/EmacsLispExpectations>.
+;; -------------------------------------------------------
+(eval-when-compile
+  (when (fboundp 'expectations)
+    (expectations
+
+      (desc "Finding stuff")
+      (expect nil
+        (with-temp-buffer
+          (sj-find-last-entry)))
+      (expect 12
+        (with-temp-buffer
+          (insert (sj-today-str) "\n22:22 - foo")
+          (sj-find-last-entry)))
+      (expect nil
+        (with-temp-buffer
+          (insert "bla")
+          (sj-last-date)))
+      (expect (sj-today-str)
+        (with-temp-buffer
+          (insert (sj-today-str))
+          (sj-last-date)))
+
+      (desc "Move past current entry")
+      (expect 23
+        (with-temp-buffer
+          (insert (sj-today-str) "\n" "11:11 - bla")
+          (sj-move-past-current-entry)
+          (point)))
+
+      (desc "position for new entry")
+      (expect 13 ; Current day should be inserted automatically.
+        (with-temp-buffer
+          (sj-move-to-new-entry-position)
+          (point)))
+      (expect 23
+        (with-temp-buffer
+          (insert (sj-today-str) "\n" "11:11 - bla")
+          (sj-move-to-new-entry-position)
+          (point)))
+      (expect 11
+        (with-temp-buffer
+          (insert (sj-today-str))
+          (goto-char (point-min))
+          (sj-move-to-new-entry-position)
+          (point)))
+
+      (desc "last date")
+      (expect "2009-11-30"
+        (with-temp-buffer
+          (insert "2009-11-30 bla" "\n\n")
+          (sj-last-date))))))
 
 (provide 'simple-journal)
 ;;; simple-journal.el ends here
