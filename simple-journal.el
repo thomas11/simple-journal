@@ -53,9 +53,6 @@
 ;;; History:
 ;; 2009-11:    First release.
 
-;;; TODO
-
-
 ;;; Code:
 (defvar sj-journal-file "~/Writing/journal.txt"
   "Your journal file.")
@@ -69,10 +66,6 @@
 (defun sj-new-entry (right-here-p)
   (interactive "P")
   (sj-new-item right-here-p (format-time-string "%H:%M") " - "))
-
-(defun sj-new-todo (right-here-p)
-  (interactive "P")
-  (sj-new-item right-here-p "+ "))
 
 (defun sj-move-to-new-entry-position ()
   "Move point to a suitable position for starting a new entry.
