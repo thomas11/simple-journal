@@ -114,7 +114,10 @@ multiple lines)."
       nil)))
 
 (defun sj-visit-journal ()
-  (find-file sj-journal-file))
+  (let ((buffer (find-buffer-visiting sj-journal-file)))
+    (if buffer
+        (pop-to-buffer buffer)
+      (find-file sj-journal-file))))
 
 
 ;; Unit tests, using el-expectations by rubikitch,
