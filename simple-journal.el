@@ -67,7 +67,7 @@
   (interactive "P")
   (sj-new-item right-here-p
                "- **"
-               (format-time-string sj-date-format)
+               (format-time-string "%H:%M")
                "** - "))
 
 (defun sj-move-to-new-entry-position ()
