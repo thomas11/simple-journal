@@ -54,7 +54,7 @@
 ;; 2009-11:    First release.
 
 ;;; Code:
-(defvar sj-journal-file "~/Writing/journal.txt"
+(defconst sj-journal-file "~/Writing/journal.text"
   "Your journal file.")
 
 (defun sj-new-item (right-here-p &rest items)
@@ -65,7 +65,10 @@
 
 (defun sj-new-entry (right-here-p)
   (interactive "P")
-  (sj-new-item right-here-p (format-time-string "%H:%M") " - "))
+  (sj-new-item right-here-p
+               "- **"
+               (format-time-string sj-date-format)
+               "** - "))
 
 (defun sj-move-to-new-entry-position ()
   "Move point to a suitable position for starting a new entry.
@@ -78,7 +81,7 @@ In addition, start a new day if the last day stamp is not today."
     (when last (goto-char last))
     (sj-move-past-current-entry)
     (when (not (string= today last-day))
-      (insert "\n" today "\n"))))
+      (insert "\n" "### " today "\n\n"))))
 
 (defun sj-today-str ()
   (format-time-string "%Y-%m-%d"))
@@ -91,14 +94,15 @@ multiple lines)."
   (while (progn
            (forward-line 1)
            (looking-at "  ")))
-  ; If we're on an empty line, we're good now; if not, create one.
-  (unless (looking-at "^$")
-    (open-line 1)))
+  ; If we're on an empty line, we need one more; if not, two.
+  (if (looking-at "^$")
+    (progn (open-line 1) (forward-char 1))
+    (open-line 2) (forward-char 2)))
 
 (defun sj-find-last-entry ()
   (save-excursion
     (goto-char (point-max))
-    (re-search-backward "^[0-9][0-9]:[0-9][0-9] - .*" nil t)))
+    (re-search-backward "^[-*] \\*\\*[0-9][0-9]:[0-9][0-9]\\*\\* - " nil t)))
 
 (defun sj-last-date (&optional start-here-backwards)
   (save-excursion
@@ -126,7 +130,7 @@ multiple lines)."
           (sj-find-last-entry)))
       (expect 12
         (with-temp-buffer
-          (insert (sj-today-str) "\n22:22 - foo")
+          (insert (sj-today-str) "\n- **22:22** - foo")
           (sj-find-last-entry)))
       (expect nil
         (with-temp-buffer
@@ -138,9 +142,9 @@ multiple lines)."
           (sj-last-date)))
 
       (desc "Move past current entry")
-      (expect 23
+      (expect 29
         (with-temp-buffer
-          (insert (sj-today-str) "\n" "11:11 - bla")
+          (insert (sj-today-str) "\n" "- **11:11** - bla")
           (sj-move-past-current-entry)
           (point)))
 
@@ -149,9 +153,9 @@ multiple lines)."
         (with-temp-buffer
           (sj-move-to-new-entry-position)
           (point)))
-      (expect 23
+      (expect 29
         (with-temp-buffer
-          (insert (sj-today-str) "\n" "11:11 - bla")
+          (insert (sj-today-str) "\n" "- **11:11** - bla")
           (sj-move-to-new-entry-position)
           (point)))
       (expect 11
