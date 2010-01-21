@@ -1,11 +1,13 @@
 # simple-journal.el --- Keep a brief daily journal.
 
+Copyright (C) 2009 Thomas Kappler
+
 * Author: Thomas Kappler <tkappler@gmail.com>
 * Created: 2009 November 07
 * Keywords: journal, diary, calendar
 * URL: <http://github.com/thomas11/simple-journal/tree/master>
 
-Copyright (C) 2009 Thomas Kappler
+This file is not part of GNU Emacs.
 
 Licensed under the [GPL version 3](http://www.gnu.org/licenses/) or later.
 
@@ -41,5 +43,10 @@ file.
 
 # History
 * 2009-11:    First release.
+
+# TODO
+- sj-journal to just show the journal
+- sj-todo to narrow to TODO entries
+- rewrite docs, mention FMQ briefly, pointer to markdown conf
 
 

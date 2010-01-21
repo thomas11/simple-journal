@@ -1,11 +1,13 @@
 ;;; simple-journal.el --- Keep a brief daily journal.
 
+;; Copyright (C) 2009 Thomas Kappler
+
 ;; Author: Thomas Kappler <tkappler@gmail.com>
 ;; Created: 2009 November 07
 ;; Keywords: journal, diary, calendar
 ;; URL: <http://github.com/thomas11/simple-journal/tree/master>
 
-;; Copyright (C) 2009 Thomas Kappler
+;; This file is not part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -53,22 +55,29 @@
 ;;; History:
 ;; 2009-11:    First release.
 
+;;; TODO
+;; - sj-journal to just show the journal
+;; - sj-todo to narrow to TODO entries
+;; - rewrite docs, mention FMQ briefly, pointer to markdown conf
+
 ;;; Code:
 (defconst sj-journal-file "~/Writing/journal.text"
   "Your journal file.")
 
-(defun sj-new-item (right-here-p &rest items)
-  (sj-visit-journal)
-  (unless right-here-p
-    (sj-move-to-new-entry-position))
-  (apply 'insert items))
-
-(defun sj-new-entry (right-here-p)
-  (interactive "P")
-  (sj-new-item right-here-p
-               "- **"
+(defun sj-new-entry ()
+  (interactive)
+  (sj-new-item "- **"
                (format-time-string "%H:%M")
                "** - "))
+
+(defun sj-new-item (&rest items)
+  (sj-update-daystamp (sj-journal))
+  (apply 'insert items))
+
+(defun sj-journal ()
+  (interactive)
+  (sj-visit-journal)
+  (sj-move-to-new-entry-position))
 
 (defun sj-move-to-new-entry-position ()
   "Move point to a suitable position for starting a new entry.
@@ -76,10 +85,13 @@ If we can find a previous entry, start a new line after it and go
 there.  Otherwise, start the new entry on a new line after point.
 In addition, start a new day if the last day stamp is not today."
   (let* ((last     (sj-find-last-entry))
-         (last-day (sj-last-date last))
-         (today    (sj-today-str)))
+         (last-day (sj-last-date last)))
     (when last (goto-char last))
     (sj-move-past-current-entry)
+    last-day))
+
+(defun sj-update-daystamp (last-day)
+  (let ((today    (sj-today-str)))
     (when (not (string= today last-day))
       (insert "\n" "### " today "\n\n"))))
 
@@ -102,15 +114,15 @@ multiple lines)."
 (defun sj-find-last-entry ()
   (save-excursion
     (goto-char (point-max))
-    (re-search-backward "^[-*] \\*\\*[0-9][0-9]:[0-9][0-9]\\*\\* - " nil t)))
+    (sj-re-backward "^[-*] \\*\\*[0-9][0-9]:[0-9][0-9]\\*\\* - ")))
 
 (defun sj-last-date (&optional start-here-backwards)
   (save-excursion
     (goto-char (if start-here-backwards
                    start-here-backwards
                  (point-max)))
-    (if (re-search-backward "^[0-9]\\{4\\}-[0-9][0-9]-[0-9][0-9]" nil t)
-        (match-string-no-properties 0)
+    (if (sj-re-backward "^### \\([0-9]\\{4\\}-[0-9][0-9]-[0-9][0-9]\\)")
+        (match-string-no-properties 1)
       nil)))
 
 (defun sj-visit-journal ()
@@ -118,6 +130,12 @@ multiple lines)."
     (if buffer
         (pop-to-buffer buffer)
       (find-file sj-journal-file))))
+
+(defun sj-re-backward (re)
+  (re-search-backward re
+                      nil  ; search bound
+                      t    ; return nil if not succesful, don't throw error
+                      ))
 
 
 ;; Unit tests, using el-expectations by rubikitch,
@@ -141,27 +159,27 @@ multiple lines)."
           (sj-last-date)))
       (expect (sj-today-str)
         (with-temp-buffer
-          (insert (sj-today-str))
+          (insert "### " (sj-today-str))
           (sj-last-date)))
 
       (desc "Move past current entry")
-      (expect 29
+      (expect 31
         (with-temp-buffer
           (insert (sj-today-str) "\n" "- **11:11** - bla")
           (sj-move-past-current-entry)
           (point)))
 
       (desc "position for new entry")
-      (expect 13 ; Current day should be inserted automatically.
+      (expect 2 ; just inserts newlines in an empty buffer
         (with-temp-buffer
           (sj-move-to-new-entry-position)
           (point)))
-      (expect 29
+      (expect 31
         (with-temp-buffer
           (insert (sj-today-str) "\n" "- **11:11** - bla")
           (sj-move-to-new-entry-position)
           (point)))
-      (expect 11
+      (expect 13
         (with-temp-buffer
           (insert (sj-today-str))
           (goto-char (point-min))
@@ -171,7 +189,7 @@ multiple lines)."
       (desc "last date")
       (expect "2009-11-30"
         (with-temp-buffer
-          (insert "2009-11-30 bla" "\n\n")
+          (insert "### 2009-11-30 bla" "\n\n")
           (sj-last-date))))))
 
 (provide 'simple-journal)
