@@ -25,7 +25,7 @@ user manually points simple-journal to a new file).
 Here is an excerpt of a journal produced with simple-journal:
 
 > ### 2010-01-10
-> 
+>  
 > - **18:15** - "XML serializations should be hidden away from
 >   human view lest small children accidentally see them and become
 >   frightened." - from the paper *Representing disjunction and
@@ -33,13 +33,11 @@ Here is an excerpt of a journal produced with simple-journal:
 >
 >
 > ### 2010-01-17
->
+> 
 > - **14:45** - Set up a minimal Wicket application with Netbeans (a
 >  first for me, version 6.8) and Jetty. I want to try out working
 >  asynchronously with JSON using Wicket. Here are the steps to get the
->  application running, serving up an empty page:
->  - Start a plain Java SE project in Netbeans.
->  - ...
+>  application running, serving up an empty page: [...]
 
 simple-journal was inspired by a blog post by Federico Mena
 * Quintero:
