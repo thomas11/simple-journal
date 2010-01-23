@@ -26,14 +26,18 @@
 
 ;; simple-journal.el is a very simple helper for writing a daily
 ;; journal. It is not a mode. You say what file your journal is in,
-;; and it offers convenience methods to go there and write a new
-;; entry.
+;; and it offers convenience methods to go there (sj-journal) and
+;; write a new entry (sj-new-entry). The latter is smart enough to
+;; find your last entry and start the new one directly below it, so
+;; you can have other texts like notes or TODO items at the end of the
+;; file.
 
 ;; It is very simple, and is supposed to stay that way. The format of
 ;; the journal is fixed. It keeps all entries in one file (until the
 ;; user manually points simple-journal to a new file).
 
-;; Here is an excerpt of a journal produced with simple-journal:
+;; Here is an excerpt of a journal produced with simple-journal. You
+;; can use all of Markdown in your text.
 
 ;; > ### 2010-01-10
 ;; >  
@@ -55,7 +59,6 @@
 ;; <http://www.gnome.org/~federico/news-2009-10.html#zeitgeist-vision-1>.
 ;; Earlier versions produced the journal format described in that
 ;; post. Thanks, Federico!
-
 
 ;;; Dependencies
 ;; None.
