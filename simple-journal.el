@@ -1,4 +1,4 @@
-;;; simple-journal.el --- Keep a brief daily journal.
+;;; simple-journal.el --- Keep a daily journal in Markdown.
 
 ;; Copyright (C) 2009 Thomas Kappler
 
@@ -24,25 +24,40 @@
 
 ;;; Commentary:
 
-;; simple-journal.el is a very simple package for writing a daily
-;; journal. It is not a mode. The format of the journal is fixed; it
-;; keeps all entries in one file (until the user manually points
-;; simple-journal to a new file) and is therefore better suited to
-;; journals with many short entries than with fewer long entries. Here
-;; is an excerpt of a journal produced with simple-journal:
+;; simple-journal.el is a very simple helper for writing a daily
+;; journal. It is not a mode. You say what file your journal is in,
+;; and it offers convenience methods to go there and write a new
+;; entry.
 
-;;     2009/Oct/07
-;;     10:42 - About to read "In pursuit of desktop evolution" by Ravasio et al - ~/Downloads/10.1.1.96.398.pdf 
-;;     12:56 - Finished reading and taking notes in ~/Documents/Gnome/design/articles.txt
-;;     + check why my subscription to opensuse-wiki didn't work
-;;     + Add autotools to gnome-activity-journal
+;; It is very simple, and is supposed to stay that way. The format of
+;; the journal is fixed. It keeps all entries in one file (until the
+;; user manually points simple-journal to a new file).
 
-;; This excerpt is originally from a blog post by Federico Mena
+;; Here is an excerpt of a journal produced with simple-journal:
+
+;; > ### 2010-01-10
+;; > 
+;; > - **18:15** - "XML serializations should be hidden away from
+;; >   human view lest small children accidentally see them and become
+;; >   frightened." - from the paper *Representing disjunction and
+;; >   quantifiers in RDF*, McDermottDou02.pdf.
+;; >
+;; >
+;; > ### 2010-01-17
+;; >
+;; > - **14:45** - Set up a minimal Wicket application with Netbeans (a
+;; >  first for me, version 6.8) and Jetty. I want to try out working
+;; >  asynchronously with JSON using Wicket. Here are the steps to get the
+;; >  application running, serving up an empty page:
+;; >
+;; >  - Start a plain Java SE project in Netbeans.
+;; >  - ...
+
+;; simple-journal was inspired by a blog post by Federico Mena
 ;; Quintero:
-;; <http://www.gnome.org/~federico/news-2009-10.html#zeitgeist-vision-1>. This
-;; post inspired me to write simple-journal, as I liked the journal
-;; format but thought I'd need to make adding entries as easy as
-;; possible to keep me journalling. Thanks, Federico!
+;; <http://www.gnome.org/~federico/news-2009-10.html#zeitgeist-vision-1>.
+;; Earlier versions produced the journal format described in that
+;; post. Thanks, Federico!
 
 
 ;;; Dependencies: none.
@@ -56,9 +71,7 @@
 ;; 2009-11:    First release.
 
 ;;; TODO
-;; - sj-journal to just show the journal
-;; - sj-todo to narrow to TODO entries
-;; - rewrite docs, mention FMQ briefly, pointer to markdown conf
+;; - sj-todo to show only TODO entries
 
 ;;; Code:
 (defconst sj-journal-file "~/Writing/journal.text"
