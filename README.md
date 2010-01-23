@@ -38,12 +38,11 @@ Here is an excerpt of a journal produced with simple-journal:
 >  first for me, version 6.8) and Jetty. I want to try out working
 >  asynchronously with JSON using Wicket. Here are the steps to get the
 >  application running, serving up an empty page:
->
 >  - Start a plain Java SE project in Netbeans.
 >  - ...
 
 simple-journal was inspired by a blog post by Federico Mena
-Quintero:
+* Quintero:
 <http://www.gnome.org/~federico/news-2009-10.html#zeitgeist-vision-1>.
 Earlier versions produced the journal format described in that
 post. Thanks, Federico!

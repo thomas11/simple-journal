@@ -49,7 +49,6 @@
 ;; >  first for me, version 6.8) and Jetty. I want to try out working
 ;; >  asynchronously with JSON using Wicket. Here are the steps to get the
 ;; >  application running, serving up an empty page:
-;; >
 ;; >  - Start a plain Java SE project in Netbeans.
 ;; >  - ...
 
