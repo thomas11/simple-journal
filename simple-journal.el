@@ -60,7 +60,8 @@
 ;; post. Thanks, Federico!
 
 
-;;; Dependencies: none.
+;;; Dependencies
+;; None.
 
 ;;; Installation:
 ;; Customize the variable at the top of the code section to point it
