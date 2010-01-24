@@ -88,6 +88,11 @@
   (sj-visit-journal)
   (sj-move-to-new-entry-position))
 
+(defun sj-todos ()
+  (interactive)
+  (sj-visit-journal)
+  (occur "TODO"))
+
 (defun sj-move-to-new-entry-position ()
   "Move point to a suitable position for starting a new entry.
 If we can find a previous entry, start a new line after it and go
@@ -100,7 +105,7 @@ In addition, start a new day if the last day stamp is not today."
     last-day))
 
 (defun sj-update-daystamp (last-day)
-  (let ((today    (sj-today-str)))
+  (let ((today (sj-today-str)))
     (when (not (string= today last-day))
       (insert "\n" "### " today "\n\n"))))
 
