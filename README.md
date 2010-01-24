@@ -15,11 +15,11 @@ Licensed under the [GPL version 3](http://www.gnu.org/licenses/) or later.
 
 simple-journal.el is a very simple helper for writing a daily
 journal. It is not a mode. You say what file your journal is in,
-and it offers convenience methods to go there (sj-journal) and
-write a new entry (sj-new-entry). The latter is smart enough to
-find your last entry and start the new one directly below it, so
-you can have other texts like notes or TODO items at the end of the
-file.
+and it offers convenience methods to go there (sj-journal), to
+write a new entry (sj-new-entry), and to show all lines containing
+"TODO". sj-new-entry is smart enough to find your last entry and
+start the new one directly below it, so you can have other texts
+like notes or TODO items at the end of the file.
 
 It is very simple, and is supposed to stay that way. The format of
 the journal is fixed. It keeps all entries in one file (until the
