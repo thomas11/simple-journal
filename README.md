@@ -44,7 +44,7 @@ can use all of Markdown in your text.
 >  application running, serving up an empty page: [...]
 
 simple-journal was inspired by a blog post by Federico Mena
-* Quintero:
+Quintero:
 <http://www.gnome.org/~federico/news-2009-10.html#zeitgeist-vision-1>.
 Earlier versions produced the journal format described in that
 post. Thanks, Federico!

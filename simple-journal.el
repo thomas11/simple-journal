@@ -80,13 +80,8 @@
 
 (defun sj-new-entry ()
   (interactive)
-  (sj-new-item "- **"
-               (format-time-string "%H:%M")
-               "** - "))
-
-(defun sj-new-item (&rest items)
   (sj-update-daystamp (sj-journal))
-  (apply 'insert items))
+  (insert "- **" (format-time-string "%H:%M") "** - "))
 
 (defun sj-journal ()
   (interactive)
@@ -116,7 +111,6 @@ In addition, start a new day if the last day stamp is not today."
   "Does one (forward-line 1), followed by more as long as we're
 looking at indented lines (in case the current entry is on
 multiple lines)."
-  (interactive)
   (while (progn
            (forward-line 1)
            (looking-at "  ")))
