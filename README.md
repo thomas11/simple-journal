@@ -22,29 +22,34 @@ start the new one directly below it, so you can have other texts
 like notes or TODO items at the end of the file.
 
 It is very simple, and is supposed to stay that way. The format of
-the journal is fixed. It keeps all entries in one file (until the
-user manually points simple-journal to a new file).
+the journal is fixed. It keeps all entries in one file, until you
+point the sj-journal-file variable to a new file.
 
 Here is an excerpt of a journal produced with simple-journal. You
-can use all of Markdown in your text.
+can use all of Markdown in your text. Titles for entries are
+optional.
 
 > ### 2010-01-10
 >  
-> - **18:15** - "XML serializations should be hidden away from
->   human view lest small children accidentally see them and become
->   frightened." - from the paper *Representing disjunction and
->   quantifiers in RDF*, McDermottDou02.pdf.
+> #### 18:15
+>
+> "XML serializations should be hidden away from
+> human view lest small children accidentally see them and become
+> frightened."---from the paper *Representing disjunction and
+> quantifiers in RDF*, McDermottDou02.pdf.
 >
 >
 > ### 2010-01-17
 > 
-> - **14:45** - Set up a minimal Wicket application with Netbeans (a
->  first for me, version 6.8) and Jetty. I want to try out working
->  asynchronously with JSON using Wicket. Here are the steps to get the
->  application running, serving up an empty page: [...]
+> #### 14:45 Wicket & Netbeans
+>
+> Set up a minimal Wicket application with Netbeans (a
+> first for me, version 6.8) and Jetty. I want to try out working
+> asynchronously with JSON using Wicket. Here are the steps to get the
+> application running, serving up an empty page: [...]
 
 simple-journal was inspired by a blog post by Federico Mena
-Quintero:
+* Quintero:
 <http://www.gnome.org/~federico/news-2009-10.html#zeitgeist-vision-1>.
 Earlier versions produced the journal format described in that
 post. Thanks, Federico!
@@ -59,5 +64,7 @@ file.
 
 # History
 * 2009-11:    First release.
+* 2010-04:    sj-todos; visits the journal and does (occur "TODO")
+            New format: Days are ### headings, entries ####.
 
 
