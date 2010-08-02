@@ -108,7 +108,6 @@ In addition, start a new day if the last day stamp is not today."
          (last-day (sj-last-date last)))
     (when last (goto-char last))
     (sj-move-past-current-entry)
-    (open-line 2)
     last-day))
 
 (defun sj-update-daystamp (last-day)
@@ -123,8 +122,9 @@ In addition, start a new day if the last day stamp is not today."
   "Move forward until either a journal entry, in which case we
 stop before it, or the end of the buffer."
   (forward-line 2)
-  (while (and (> (forward-line) 1)
-              (not (looking-at "^###")))))
+  (while (not (or (eobp)
+                  (looking-at "^###")))
+    (forward-line)))
 
 (defun sj-find-last-entry ()
   (save-excursion
